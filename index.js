@@ -8,6 +8,12 @@ let currentHistory = -1;
 let speaking = false;
 const banner = fs.readFileSync('banner.txt', 'utf8');
 
+const commandList = {
+	"/help": "Shows this help.",
+	"/clear": "Clears all output from the screen.",
+	"/exit": "Exits the application."
+}
+
 var screen = blessed.screen(
 {
 	smartCSR: true
@@ -66,6 +72,14 @@ input.on("submit", function(data)
 	{
 		case "":
 			break;
+		case "/help":
+		case "/?":
+			output.pushLine("Command help:");
+			for (let [command, description] of Object.entries(commandList)) {
+				output.pushLine(`\t${command}:`.padEnd(10, " ") + description);
+			}
+			output.setScrollPerc(100);
+			break;
 		case "/clear":
 		case "/cls":
 			output.setContent("");
@@ -76,7 +90,6 @@ input.on("submit", function(data)
 		case "/close":
 		case "/kill":
 			return process.exit(0);
-			break;
 		default:
 			if (data.charAt(0) == "/")
 			{
